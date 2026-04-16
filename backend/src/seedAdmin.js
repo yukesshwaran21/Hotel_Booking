@@ -1,9 +1,10 @@
 const dotenv = require('dotenv');
 const bcrypt = require('bcryptjs');
+const path = require('path');
 const connectDatabase = require('./config/db');
 const User = require('./models/User');
 
-dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 const seedAdmin = async () => {
   const { ADMIN_NAME, ADMIN_EMAIL, ADMIN_PASSWORD } = process.env;
