@@ -1,0 +1,42 @@
+.booking-form-wrapper {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 1.25rem;
+  box-shadow: 0 18px 40px rgba(17, 38, 70, 0.08);
+}
+
+.booking-form-title {
+  margin: 0 0 0.9rem;
+  color: #1d3557;
+}
+
+.booking-form {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.booking-form label {
+  display: grid;
+  gap: 0.35rem;
+  color: #415a77;
+}
+
+.booking-form input {
+  border: 1px solid #d5e2ef;
+  border-radius: 10px;
+  padding: 0.65rem 0.75rem;
+}
+
+.booking-form button {
+  border: none;
+  border-radius: 10px;
+  padding: 0.72rem 0.9rem;
+  background: #f4a261;
+  color: #fff;
+  cursor: pointer;
+}
+
+.booking-form button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

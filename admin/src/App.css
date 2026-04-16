@@ -1,38 +1,70 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
+.admin-app-root {
   min-height: 100vh;
+  padding: 1.3rem 1rem 2.2rem;
+  background: linear-gradient(135deg, #f7fafc, #e8f2ff 55%, #f1f4f8);
+}
+
+.admin-shell {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.admin-header {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  gap: 0.7rem;
+  margin-bottom: 1rem;
 }
 
-.App-link {
-  color: #61dafb;
+.admin-header h1 {
+  margin: 0;
+  color: #09203f;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
+.admin-header p {
+  margin: 0.2rem 0 0;
+  color: #445f7b;
+}
+
+.admin-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.admin-actions button {
+  border: none;
+  border-radius: 10px;
+  padding: 0.58rem 0.84rem;
+  color: #fff;
+  cursor: pointer;
+}
+
+.admin-actions button:first-child {
+  background: #1d3557;
+}
+
+.admin-actions button:last-child {
+  background: #e63946;
+}
+
+.admin-message {
+  margin: 0.7rem 0 1rem;
+  padding: 0.72rem 0.9rem;
+  border-radius: 10px;
+  background: #fef2d5;
+  color: #7b5f1a;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 980px) {
+  .admin-grid {
+    grid-template-columns: 360px 1fr;
   }
 }
