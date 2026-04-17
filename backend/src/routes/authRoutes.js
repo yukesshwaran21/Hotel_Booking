@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const LoginEvent = require('../models/LoginEvent');
 
 const router = express.Router();
 
@@ -75,6 +76,18 @@ router.post('/login', async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    try {
+      await LoginEvent.create({
+        user: user._id,
+        role: user.role,
+        success: true,
+        ipAddress: req.ip || '',
+        userAgent: req.get('user-agent') || ''
+      });
+    } catch (_error) {
+      // Login history should not block user authentication if write fails.
     }
 
     return res.status(200).json({
