@@ -78,3 +78,11 @@ export const deleteUser = async (id, token) => {
 
   return parseResponse(response);
 };
+
+export const getAllBookings = async (token) => {
+  const response = await fetch(`${API_BASE_URL}/bookings/all`, {
+    headers: withToken(token)
+  });
+
+  return parseResponse(response);
+};

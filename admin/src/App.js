@@ -1,10 +1,21 @@
 import './App.css';
 import { useCallback, useEffect, useState } from 'react';
+import { NavLink, Navigate, Route, Routes } from 'react-router-dom';
 import AdminLogin from './components/AdminLogin';
 import RoomForm from './components/RoomForm';
 import RoomTable from './components/RoomTable';
 import UserTable from './components/UserTable';
-import { addRoom, adminLogin, changeUserBlockStatus, deleteUser, getRooms, getUsers, updateRoom } from './services/api';
+import BookingTable from './components/BookingTable';
+import {
+  addRoom,
+  adminLogin,
+  changeUserBlockStatus,
+  deleteUser,
+  getAllBookings,
+  getRooms,
+  getUsers,
+  updateRoom
+} from './services/api';
 
 function App() {
   const [authState, setAuthState] = useState(() => {
@@ -14,6 +25,7 @@ function App() {
 
   const [rooms, setRooms] = useState([]);
   const [users, setUsers] = useState([]);
+  const [bookings, setBookings] = useState([]);
   const [editingRoom, setEditingRoom] = useState(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
@@ -42,17 +54,32 @@ function App() {
     }
   }, [authState.token]);
 
+  const loadBookings = useCallback(async () => {
+    if (!authState.token) {
+      return;
+    }
+
+    try {
+      const data = await getAllBookings(authState.token);
+      setBookings(data);
+    } catch (error) {
+      setMessage(error.message);
+    }
+  }, [authState.token]);
+
   useEffect(() => {
     if (authState.token) {
       localStorage.setItem('hotel_admin_auth', JSON.stringify(authState));
       loadRooms();
       loadUsers();
+      loadBookings();
     } else {
       localStorage.removeItem('hotel_admin_auth');
       setRooms([]);
       setUsers([]);
+      setBookings([]);
     }
-  }, [authState, loadRooms, loadUsers]);
+  }, [authState, loadRooms, loadUsers, loadBookings]);
 
   const handleAdminLogin = async (payload) => {
     setLoading(true);
@@ -90,6 +117,7 @@ function App() {
       }
 
       await loadRooms();
+      await loadBookings();
     } catch (error) {
       setMessage(error.message);
     } finally {
@@ -154,6 +182,7 @@ function App() {
                 onClick={() => {
                   loadRooms();
                   loadUsers();
+                  loadBookings();
                 }}
               >
                 Refresh Data
@@ -170,16 +199,66 @@ function App() {
         {!isAdminLoggedIn ? (
           <AdminLogin onSubmit={handleAdminLogin} loading={loading} />
         ) : (
-          <section className="admin-grid">
-            <RoomForm
-              editingRoom={editingRoom}
-              onSubmit={handleRoomSubmit}
-              loading={loading}
-              onCancelEdit={() => setEditingRoom(null)}
-            />
-            <div className="admin-sections">
-              <RoomTable rooms={rooms} onEdit={setEditingRoom} />
-              <UserTable users={users} loading={loading} onToggleBlock={handleToggleBlock} onDelete={handleDeleteUser} />
+          <section className="admin-layout">
+            <aside className="admin-sidebar">
+              <h2>Management</h2>
+              <nav className="admin-nav-links">
+                <NavLink to="/dashboard">Dashboard</NavLink>
+                <NavLink to="/rooms">Room Inventory</NavLink>
+                <NavLink to="/users">User Management</NavLink>
+                <NavLink to="/bookings">Bookings</NavLink>
+              </nav>
+            </aside>
+
+            <div className="admin-page-area">
+              <Routes>
+                <Route
+                  path="/dashboard"
+                  element={
+                    <section className="summary-grid">
+                      <article className="summary-card">
+                        <h3>Total Rooms</h3>
+                        <p>{rooms.length}</p>
+                      </article>
+                      <article className="summary-card">
+                        <h3>Total Users</h3>
+                        <p>{users.length}</p>
+                      </article>
+                      <article className="summary-card">
+                        <h3>Total Bookings</h3>
+                        <p>{bookings.length}</p>
+                      </article>
+                    </section>
+                  }
+                />
+                <Route
+                  path="/rooms"
+                  element={
+                    <section className="admin-grid">
+                      <RoomForm
+                        editingRoom={editingRoom}
+                        onSubmit={handleRoomSubmit}
+                        loading={loading}
+                        onCancelEdit={() => setEditingRoom(null)}
+                      />
+                      <RoomTable rooms={rooms} onEdit={setEditingRoom} />
+                    </section>
+                  }
+                />
+                <Route
+                  path="/users"
+                  element={
+                    <UserTable
+                      users={users}
+                      loading={loading}
+                      onToggleBlock={handleToggleBlock}
+                      onDelete={handleDeleteUser}
+                    />
+                  }
+                />
+                <Route path="/bookings" element={<BookingTable bookings={bookings} />} />
+                <Route path="*" element={<Navigate to="/dashboard" replace />} />
+              </Routes>
             </div>
           </section>
         )}

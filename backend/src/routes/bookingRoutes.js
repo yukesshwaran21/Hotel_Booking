@@ -2,7 +2,7 @@ const express = require('express');
 const Booking = require('../models/Booking');
 const Room = require('../models/Room');
 const User = require('../models/User');
-const { protect } = require('../middleware/authMiddleware');
+const { protect, adminOnly } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
@@ -58,6 +58,19 @@ router.get('/my-bookings', protect, async (req, res) => {
   try {
     const bookings = await Booking.find({ user: req.user.id })
       .populate('room')
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json(bookings);
+  } catch (error) {
+    return res.status(500).json({ message: error.message || 'Failed to fetch bookings' });
+  }
+});
+
+router.get('/all', protect, adminOnly, async (_req, res) => {
+  try {
+    const bookings = await Booking.find({})
+      .populate('room')
+      .populate('user', 'name email')
       .sort({ createdAt: -1 });
 
     return res.status(200).json(bookings);
