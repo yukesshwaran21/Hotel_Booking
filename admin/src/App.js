@@ -6,12 +6,14 @@ import RoomForm from './components/RoomForm';
 import RoomTable from './components/RoomTable';
 import UserTable from './components/UserTable';
 import BookingTable from './components/BookingTable';
+import DashboardOverview from './components/DashboardOverview';
 import {
   addRoom,
   adminLogin,
   changeUserBlockStatus,
   deleteUser,
   getAllBookings,
+  getDashboardAnalytics,
   getRooms,
   getUsers,
   updateRoom
@@ -26,8 +28,10 @@ function App() {
   const [rooms, setRooms] = useState([]);
   const [users, setUsers] = useState([]);
   const [bookings, setBookings] = useState([]);
+  const [analytics, setAnalytics] = useState(null);
   const [editingRoom, setEditingRoom] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [dashboardLoading, setDashboardLoading] = useState(false);
   const [message, setMessage] = useState('');
 
   const isAdminLoggedIn = Boolean(authState.token);
@@ -67,19 +71,49 @@ function App() {
     }
   }, [authState.token]);
 
+  const loadDashboardAnalytics = useCallback(async () => {
+    if (!authState.token) {
+      return;
+    }
+
+    setDashboardLoading(true);
+    try {
+      const data = await getDashboardAnalytics(authState.token);
+      setAnalytics(data);
+    } catch (error) {
+      setMessage(error.message);
+    } finally {
+      setDashboardLoading(false);
+    }
+  }, [authState.token]);
+
   useEffect(() => {
     if (authState.token) {
       localStorage.setItem('hotel_admin_auth', JSON.stringify(authState));
       loadRooms();
       loadUsers();
       loadBookings();
+      loadDashboardAnalytics();
     } else {
       localStorage.removeItem('hotel_admin_auth');
       setRooms([]);
       setUsers([]);
       setBookings([]);
+      setAnalytics(null);
     }
-  }, [authState, loadRooms, loadUsers, loadBookings]);
+  }, [authState, loadRooms, loadUsers, loadBookings, loadDashboardAnalytics]);
+
+  useEffect(() => {
+    if (!authState.token) {
+      return undefined;
+    }
+
+    const intervalId = setInterval(() => {
+      loadDashboardAnalytics();
+    }, 15000);
+
+    return () => clearInterval(intervalId);
+  }, [authState.token, loadDashboardAnalytics]);
 
   const handleAdminLogin = async (payload) => {
     setLoading(true);
@@ -118,6 +152,7 @@ function App() {
 
       await loadRooms();
       await loadBookings();
+      await loadDashboardAnalytics();
     } catch (error) {
       setMessage(error.message);
     } finally {
@@ -139,6 +174,7 @@ function App() {
       const result = await changeUserBlockStatus(user._id, !user.isBlocked, authState.token);
       setMessage(result.message);
       await loadUsers();
+      await loadDashboardAnalytics();
     } catch (error) {
       setMessage(error.message);
     } finally {
@@ -159,6 +195,7 @@ function App() {
       const result = await deleteUser(user._id, authState.token);
       setMessage(result.message);
       await loadUsers();
+      await loadDashboardAnalytics();
     } catch (error) {
       setMessage(error.message);
     } finally {
@@ -183,6 +220,7 @@ function App() {
                   loadRooms();
                   loadUsers();
                   loadBookings();
+                  loadDashboardAnalytics();
                 }}
               >
                 Refresh Data
@@ -214,22 +252,7 @@ function App() {
               <Routes>
                 <Route
                   path="/dashboard"
-                  element={
-                    <section className="summary-grid">
-                      <article className="summary-card">
-                        <h3>Total Rooms</h3>
-                        <p>{rooms.length}</p>
-                      </article>
-                      <article className="summary-card">
-                        <h3>Total Users</h3>
-                        <p>{users.length}</p>
-                      </article>
-                      <article className="summary-card">
-                        <h3>Total Bookings</h3>
-                        <p>{bookings.length}</p>
-                      </article>
-                    </section>
-                  }
+                  element={<DashboardOverview analytics={analytics} loading={dashboardLoading} />}
                 />
                 <Route
                   path="/rooms"
