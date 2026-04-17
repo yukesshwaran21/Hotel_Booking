@@ -1,12 +1,22 @@
 const express = require('express');
 const Booking = require('../models/Booking');
 const Room = require('../models/Room');
+const User = require('../models/User');
 const { protect } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
 router.post('/', protect, async (req, res) => {
   try {
+    const currentUser = await User.findById(req.user.id).select('isBlocked');
+    if (!currentUser) {
+      return res.status(401).json({ message: 'User not found' });
+    }
+
+    if (currentUser.isBlocked) {
+      return res.status(403).json({ message: 'Your account is blocked. Booking is disabled.' });
+    }
+
     const { roomId, checkInDate, checkOutDate, guests } = req.body;
 
     if (!roomId || !checkInDate || !checkOutDate || !guests) {
