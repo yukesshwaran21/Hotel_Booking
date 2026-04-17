@@ -1,0 +1,135 @@
+.dashboard-overview {
+  display: grid;
+  gap: 1rem;
+}
+
+.dashboard-overview-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.dashboard-overview-header h2 {
+  margin: 0;
+  color: #0b2b50;
+}
+
+.dashboard-overview-header p {
+  margin: 0.3rem 0 0;
+  color: #56708c;
+}
+
+.dashboard-overview-header span {
+  color: #3d5e80;
+  font-size: 0.95rem;
+}
+
+.dashboard-loading {
+  margin: 0;
+  color: #4e6783;
+}
+
+.dashboard-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.dashboard-stat-card {
+  background: #fff;
+  border-top: 4px solid #0f4c81;
+  border-radius: 14px;
+  padding: 0.95rem;
+  box-shadow: 0 10px 24px rgba(9, 32, 63, 0.09);
+}
+
+.dashboard-stat-card h3 {
+  margin: 0;
+  font-size: 0.96rem;
+  color: #325475;
+}
+
+.dashboard-stat-card p {
+  margin: 0.42rem 0 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #06213f;
+}
+
+.dashboard-chart-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.dashboard-chart-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 1rem;
+  box-shadow: 0 10px 24px rgba(9, 32, 63, 0.09);
+}
+
+.dashboard-chart-card h3 {
+  margin: 0 0 1rem;
+  color: #1d4267;
+}
+
+.dashboard-activity-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.dashboard-activity-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 1rem;
+  box-shadow: 0 10px 24px rgba(9, 32, 63, 0.09);
+}
+
+.dashboard-activity-card h3 {
+  margin: 0 0 0.8rem;
+  color: #1d4267;
+}
+
+.dashboard-activity-card ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.7rem;
+}
+
+.dashboard-activity-card li {
+  padding: 0.7rem;
+  border-radius: 10px;
+  background: #f6fbff;
+  display: grid;
+  gap: 0.2rem;
+}
+
+.dashboard-activity-card strong {
+  color: #0d3156;
+}
+
+.dashboard-activity-card span {
+  color: #496887;
+  font-size: 0.92rem;
+}
+
+.dashboard-empty {
+  margin: 0;
+  color: #60748a;
+}
+
+@media (min-width: 1024px) {
+  .dashboard-chart-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .dashboard-activity-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
