@@ -51,3 +51,30 @@ export const updateRoom = async (id, payload, token) => {
 
   return parseResponse(response);
 };
+
+export const getUsers = async (token) => {
+  const response = await fetch(`${API_BASE_URL}/admin/users`, {
+    headers: withToken(token)
+  });
+
+  return parseResponse(response);
+};
+
+export const changeUserBlockStatus = async (id, isBlocked, token) => {
+  const response = await fetch(`${API_BASE_URL}/admin/users/${id}/block`, {
+    method: 'PATCH',
+    headers: withToken(token),
+    body: JSON.stringify({ isBlocked })
+  });
+
+  return parseResponse(response);
+};
+
+export const deleteUser = async (id, token) => {
+  const response = await fetch(`${API_BASE_URL}/admin/users/${id}`, {
+    method: 'DELETE',
+    headers: withToken(token)
+  });
+
+  return parseResponse(response);
+};
