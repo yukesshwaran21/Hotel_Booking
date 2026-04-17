@@ -86,3 +86,11 @@ export const getAllBookings = async (token) => {
 
   return parseResponse(response);
 };
+
+export const getDashboardAnalytics = async (token) => {
+  const response = await fetch(`${API_BASE_URL}/admin/analytics/dashboard`, {
+    headers: withToken(token)
+  });
+
+  return parseResponse(response);
+};
