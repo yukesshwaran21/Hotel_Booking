@@ -7,7 +7,7 @@ const initialState = {
   guests: 1
 };
 
-function BookingForm({ selectedRoomId, onBook, loading }) {
+function BookingForm({ selectedRoomId, onBook, loading, isLoggedIn }) {
   const [formData, setFormData] = useState(initialState);
 
   const handleChange = (event) => {
@@ -36,6 +36,7 @@ function BookingForm({ selectedRoomId, onBook, loading }) {
   return (
     <section className="booking-form-wrapper">
       <h2 className="booking-form-title">Book Your Room</h2>
+      {!isLoggedIn ? <p className="booking-note">You can browse rooms, but login is required to confirm booking.</p> : null}
       <form className="booking-form" onSubmit={handleSubmit}>
         <label>
           Check In
@@ -53,7 +54,7 @@ function BookingForm({ selectedRoomId, onBook, loading }) {
         </label>
 
         <button type="submit" disabled={loading || !selectedRoomId}>
-          {loading ? 'Booking...' : 'Confirm Booking'}
+          {loading ? 'Booking...' : isLoggedIn ? 'Confirm Booking' : 'Login to Confirm Booking'}
         </button>
       </form>
     </section>
