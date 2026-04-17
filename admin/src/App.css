@@ -63,6 +63,12 @@
   gap: 1rem;
 }
 
+.admin-sections {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
 @media (min-width: 980px) {
   .admin-grid {
     grid-template-columns: 360px 1fr;
