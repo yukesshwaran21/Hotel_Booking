@@ -7,42 +7,10 @@ import BookingForm from './components/BookingForm';
 import UserDashboard from './components/UserDashboard';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import HomePage from './components/HomePage';
 import { createBooking, fetchMyBookings, fetchRooms, loginUser, registerUser } from './services/api';
 
-function HomePage() {
-  return (
-    <section className="page-card">
-      <h2>Welcome to BlueWave Hotel</h2>
-      <p>
-        Explore premium rooms, ocean-inspired interiors, and a smooth booking experience. Browse rooms, compare
-        prices, and confirm your stay in minutes.
-      </p>
-    </section>
-  );
-}
 
-function AboutPage() {
-  return (
-    <section className="page-card">
-      <h2>About Us</h2>
-      <p>
-        BlueWave Hotel is designed for comfort and convenience. From solo business trips to family vacations, we
-        provide curated room options with transparent pricing and easy management.
-      </p>
-    </section>
-  );
-}
-
-function ContactPage() {
-  return (
-    <section className="page-card">
-      <h2>Contact</h2>
-      <p>Email: support@bluewavehotel.com</p>
-      <p>Phone: +91 98765 43210</p>
-      <p>Address: Beach Road, Chennai, India</p>
-    </section>
-  );
-}
 
 function AuthPage({ mode, onLogin, onRegister, loading, message }) {
   const navigate = useNavigate();
@@ -226,8 +194,6 @@ function AppContent() {
               />
             }
           />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/contact" element={<ContactPage />} />
           <Route
             path="/login"
             element={

@@ -23,12 +23,6 @@ function Navbar({ isLoggedIn, onLogout, onRefreshRooms, user }) {
         <NavLink to="/rooms" className={({ isActive }) => (isActive ? 'active' : '')}>
           Rooms
         </NavLink>
-        <NavLink to="/about" className={({ isActive }) => (isActive ? 'active' : '')}>
-          About
-        </NavLink>
-        <NavLink to="/contact" className={({ isActive }) => (isActive ? 'active' : '')}>
-          Contact
-        </NavLink>
         {isLoggedIn ? (
           <NavLink to="/dashboard" className={({ isActive }) => (isActive ? 'active' : '')}>
             Dashboard
