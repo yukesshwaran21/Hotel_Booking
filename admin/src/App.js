@@ -1,9 +1,10 @@
 import './App.css';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import AdminLogin from './components/AdminLogin';
 import RoomForm from './components/RoomForm';
 import RoomTable from './components/RoomTable';
-import { addRoom, adminLogin, getRooms, updateRoom } from './services/api';
+import UserTable from './components/UserTable';
+import { addRoom, adminLogin, changeUserBlockStatus, deleteUser, getRooms, getUsers, updateRoom } from './services/api';
 
 function App() {
   const [authState, setAuthState] = useState(() => {
@@ -12,30 +13,46 @@ function App() {
   });
 
   const [rooms, setRooms] = useState([]);
+  const [users, setUsers] = useState([]);
   const [editingRoom, setEditingRoom] = useState(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
 
   const isAdminLoggedIn = Boolean(authState.token);
 
-  const loadRooms = async () => {
+  const loadRooms = useCallback(async () => {
     try {
       const data = await getRooms();
       setRooms(data);
     } catch (error) {
       setMessage(error.message);
     }
-  };
+  }, []);
+
+  const loadUsers = useCallback(async () => {
+    if (!authState.token) {
+      return;
+    }
+
+    try {
+      const data = await getUsers(authState.token);
+      setUsers(data.filter((user) => user.role === 'user'));
+    } catch (error) {
+      setMessage(error.message);
+    }
+  }, [authState.token]);
 
   useEffect(() => {
     if (authState.token) {
       localStorage.setItem('hotel_admin_auth', JSON.stringify(authState));
       loadRooms();
+      loadUsers();
     } else {
       localStorage.removeItem('hotel_admin_auth');
       setRooms([]);
+      setUsers([]);
     }
-  }, [authState]);
+  }, [authState, loadRooms, loadUsers]);
 
   const handleAdminLogin = async (payload) => {
     setLoading(true);
@@ -86,6 +103,41 @@ function App() {
     setMessage('Admin logged out');
   };
 
+  const handleToggleBlock = async (user) => {
+    setLoading(true);
+    setMessage('');
+
+    try {
+      const result = await changeUserBlockStatus(user._id, !user.isBlocked, authState.token);
+      setMessage(result.message);
+      await loadUsers();
+    } catch (error) {
+      setMessage(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteUser = async (user) => {
+    const shouldDelete = window.confirm(`Delete user ${user.email}? This action cannot be undone.`);
+    if (!shouldDelete) {
+      return;
+    }
+
+    setLoading(true);
+    setMessage('');
+
+    try {
+      const result = await deleteUser(user._id, authState.token);
+      setMessage(result.message);
+      await loadUsers();
+    } catch (error) {
+      setMessage(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="admin-app-root">
       <main className="admin-shell">
@@ -97,8 +149,14 @@ function App() {
 
           {isAdminLoggedIn ? (
             <div className="admin-actions">
-              <button type="button" onClick={loadRooms}>
-                Refresh Rooms
+              <button
+                type="button"
+                onClick={() => {
+                  loadRooms();
+                  loadUsers();
+                }}
+              >
+                Refresh Data
               </button>
               <button type="button" onClick={handleLogout}>
                 Logout
@@ -119,7 +177,10 @@ function App() {
               loading={loading}
               onCancelEdit={() => setEditingRoom(null)}
             />
-            <RoomTable rooms={rooms} onEdit={setEditingRoom} />
+            <div className="admin-sections">
+              <RoomTable rooms={rooms} onEdit={setEditingRoom} />
+              <UserTable users={users} loading={loading} onToggleBlock={handleToggleBlock} onDelete={handleDeleteUser} />
+            </div>
           </section>
         )}
       </main>
