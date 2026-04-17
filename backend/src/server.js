@@ -6,6 +6,7 @@ const connectDatabase = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const roomRoutes = require('./routes/roomRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
+const adminUserRoutes = require('./routes/adminUserRoutes');
 
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 connectDatabase();
@@ -22,6 +23,7 @@ app.get('/', (_req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/rooms', roomRoutes);
 app.use('/api/bookings', bookingRoutes);
+app.use('/api/admin', adminUserRoutes);
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
