@@ -16,7 +16,7 @@ Both `frontend` and `admin` use the same backend API and the same MongoDB databa
 
 ```env
 PORT=5000
-MONGODB_URI=mongodb+srv://varunesh:varunesh@cluster1.lvoka.mongodb.net/hotel_booking?retryWrites=true&w=majority&appName=Cluster1
+MONGODB_URI=mongodb+srv://<db_username>:<db_password>@<cluster_name>.mongodb.net/hotel_booking?retryWrites=true&w=majority
 JWT_SECRET=replace_with_strong_secret
 ADMIN_NAME=Hotel Admin
 ADMIN_EMAIL=admin@hotel.com
